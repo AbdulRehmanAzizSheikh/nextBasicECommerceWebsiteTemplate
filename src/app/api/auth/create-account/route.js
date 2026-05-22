@@ -83,6 +83,7 @@ export async function POST(req) {
           username: user.username,
           email: user.email,
         },
+        success: "accountCreatedSuccess",
       },
       { status: 201 },
     );
