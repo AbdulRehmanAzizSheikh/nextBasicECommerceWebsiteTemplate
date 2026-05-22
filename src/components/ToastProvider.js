@@ -1,6 +1,4 @@
-// components/ToastProvider.tsx
 "use client";
-
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,7 +8,7 @@ export default function ToastProvider({ children }) {
       {children}
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -18,7 +16,7 @@ export default function ToastProvider({ children }) {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark" // Tumhara design dark aesthetic hai, to "dark" theme best rahega!
       />
     </>
   );
