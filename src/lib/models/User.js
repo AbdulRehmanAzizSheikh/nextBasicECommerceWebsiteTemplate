@@ -11,12 +11,8 @@ const userSchema = new Schema(
                 default: false,
             },
             otp: {
-                code: {
-                    type: String,
-                },
-                expireAt: {
-                    type: Date,
-                },
+                code: String,
+                expireAt: Date,
             },
         },
     },
