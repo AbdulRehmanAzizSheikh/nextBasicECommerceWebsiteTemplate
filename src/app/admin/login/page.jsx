@@ -18,7 +18,7 @@ export default function SendOtpPage() {
       return;
     }
     try {
-      const res = await fetch("/api/auth/verify-account/send-otp", {
+      const res = await fetch("/api/admin/login/send-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export default function SendOtpPage() {
       return;
     }
     try {
-      const res = await fetch("/api/auth/verify-account/verify-otp", {
+      const res = await fetch("/api/admin/login/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,10 +86,10 @@ export default function SendOtpPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-            Verify Account
+            Admin Login
           </h1>
           <p className="text-sm text-gray-400 mt-2">
-            We will send a one-time password to your email
+            Please enter your credentials to access the admin panel
           </p>
         </div>
 
