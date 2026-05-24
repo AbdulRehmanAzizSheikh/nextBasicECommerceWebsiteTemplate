@@ -4,12 +4,10 @@ import { Plus, Eye, Edit2, Trash2, X, Star, Loader2 } from "lucide-react";
 
 export default function AdminProductsPage() {
   // Modals & States
-  const [isFormOpen, setIsFormOpen] = useState(false); // Add/Edit Modal
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false); // View Modal
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-
-  // Data States
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { connectMongodb } from "@/lib/db";
 import Product from "@/lib/models/Product";
 
-// 🌍 Sab ke liye open: Frontend website par products show karne ke liye
 export async function GET() {
   try {
     await connectMongodb();
