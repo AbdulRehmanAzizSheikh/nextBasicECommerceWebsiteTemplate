@@ -27,9 +27,9 @@ export default function LoginPage() {
         },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
         toast.success(data.message || "Login Successfully!");
         // router.push("/");
@@ -43,34 +43,36 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-if (loading){
-  return <Loader />
-}
+  if (loading) {
+    return <Loader />;
+  }
   return (
     // 🌌 Aesthetic Mesh Gradient Background
     <div className="flex items-center justify-center min-h-screen bg-gray-950 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-gray-950 to-purple-950 p-4">
-      
       {/* 🔮 Background Abstract Glow Shapes */}
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-pink-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
 
       {/* 💳 Water Transparent / Glassmorphism Card */}
       <div className="w-full max-w-md backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-8 sm:p-10 transition-all duration-300 hover:border-white/[0.15]">
-        
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
             Welcome Back
           </h1>
-          <p className="text-sm text-gray-400 mt-2">Login to your account to continue</p>
+          <p className="text-sm text-gray-400 mt-2">
+            Login to your account to continue
+          </p>
         </div>
 
         {/* Form Container (Ab bilkul sahi band ho raha hai) */}
         <div className="flex flex-col gap-5">
-          
           {/* Email */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1">
+            <label
+              htmlFor="email"
+              className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1"
+            >
               Email Address
             </label>
             <input
@@ -85,7 +87,10 @@ if (loading){
 
           {/* Password */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1">
+            <label
+              htmlFor="password"
+              className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1"
+            >
               Password
             </label>
             <input
@@ -120,7 +125,6 @@ if (loading){
             </Link>
           </p>
         </div>
-
       </div>
     </div>
   );

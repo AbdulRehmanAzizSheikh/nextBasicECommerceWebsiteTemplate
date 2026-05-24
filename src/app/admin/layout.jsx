@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -9,18 +9,23 @@ import {
   LogOut,
   Menu,
   X,
+  RotateCcw,
+  SlidersHorizontal, // Pop-up ke head ke liye icon
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isQuickSettingsOpen, setIsQuickSettingsOpen] = useState(false); // Quick Settings modal state
 
-  // 📍 Icon Position State (Initial position top-left margin ke mutabiq)
+  // 📍 Draggable Menu Icon Position State
   const [iconPos, setIconPos] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
 
   const iconRef = useRef(null);
+  const quickSettingsRef = useRef(null);
   const dragStart = useRef({ x: 0, y: 0 });
   const clickTimestamp = useRef(0);
 
@@ -32,14 +37,34 @@ export default function AdminLayout({ children }) {
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
-  // 💾 1. Load Position from LocalStorage on Mount
+  // Outside click se quick settings close karne ke liye
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        quickSettingsRef.current &&
+        !quickSettingsRef.current.contains(event.target)
+      ) {
+        setIsQuickSettingsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 💾 Load Position from LocalStorage on Mount
   useEffect(() => {
     const savedPos = localStorage.getItem("admin-menu-pos");
     if (savedPos) {
       try {
         const parsed = JSON.parse(savedPos);
         if (typeof parsed.x === "number" && typeof parsed.y === "number") {
-          setIconPos(parsed);
+          const isOutOfBounds =
+            parsed.x > window.innerWidth || parsed.y > window.innerHeight;
+          if (isOutOfBounds) {
+            setIconPos({ x: 16, y: 16 });
+          } else {
+            setIconPos(parsed);
+          }
         }
       } catch (e) {
         console.error("Error parsing localStorage position", e);
@@ -47,7 +72,7 @@ export default function AdminLayout({ children }) {
     }
   }, []);
 
-  // 🖱️ Mouse / Touch Down: Dragging Start
+  // 🖱️ Mouse Down (Desktop Drag)
   const handleMouseDown = (e) => {
     setIsDragging(true);
     clickTimestamp.current = Date.now();
@@ -57,15 +82,34 @@ export default function AdminLayout({ children }) {
     };
   };
 
-  // 🔄 Mouse Move: Coordinate tracking with boundary containment
+  // 📱 Touch Start (Mobile Drag)
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    clickTimestamp.current = Date.now();
+    const touch = e.touches[0];
+    dragStart.current = {
+      x: touch.clientX - iconPos.x,
+      y: touch.clientY - iconPos.y,
+    };
+  };
+
+  // 🔄 Combined Drag Effect
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isDragging) return;
+      updatePosition(e.clientX, e.clientY);
+    };
 
-      let newX = e.clientX - dragStart.current.x;
-      let newY = e.clientY - dragStart.current.y;
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      updatePosition(touch.clientX, touch.clientY);
+    };
 
-      // Safe screen margins taake icon bilkul gayab na ho sake
+    const updatePosition = (clientX, clientY) => {
+      let newX = clientX - dragStart.current.x;
+      let newY = clientY - dragStart.current.y;
+
       const maxX = window.innerWidth - 60;
       const maxY = window.innerHeight - 60;
 
@@ -75,26 +119,29 @@ export default function AdminLayout({ children }) {
       setIconPos({ x: newX, y: newY });
     };
 
-    const handleMouseUp = () => {
+    const handleDragEnd = () => {
       if (isDragging) {
         setIsDragging(false);
-        // 💾 Save position to localStorage when drag ends
         localStorage.setItem("admin-menu-pos", JSON.stringify(iconPos));
       }
     };
 
     if (isDragging) {
       window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mouseup", handleDragEnd);
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleDragEnd);
     }
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mouseup", handleDragEnd);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleDragEnd);
     };
   }, [isDragging, iconPos]);
 
-  // 🎯 Click Handler: Open panel if it was a quick click, not a drag movement
+  // 🎯 Hamburger Click Logic
   const handleIconClick = () => {
     const clickDuration = Date.now() - clickTimestamp.current;
     if (clickDuration < 200) {
@@ -102,13 +149,21 @@ export default function AdminLayout({ children }) {
     }
   };
 
+  // ⚡ Reset Position Core Execution
+  const handleResetPosition = () => {
+    const defaultPos = { x: 16, y: 16 };
+    setIconPos(defaultPos);
+    localStorage.setItem("admin-menu-pos", JSON.stringify(defaultPos));
+    setIsQuickSettingsOpen(false); // Reset ke baad panel close
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-950 text-white font-sans antialiased relative selection:bg-emerald-500 selection:text-black">
       {/* 📱💻 DRAGGABLE FLOATING TOGGLE ICON BUTTON */}
-      {/* Yeh icon ab standard layout block se bahar nikal kar fixed float karega */}
       <div
         ref={iconRef}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleIconClick}
         style={{
           position: "fixed",
@@ -121,7 +176,6 @@ export default function AdminLayout({ children }) {
             ? "cursor-grabbing border-emerald-500 scale-110 bg-slate-900/90 shadow-emerald-500/10"
             : "cursor-grab border-slate-800 hover:border-slate-700 active:scale-95"
         }`}
-        title="Pakad kar kahin bhi move karo!"
       >
         {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
       </div>
@@ -204,10 +258,69 @@ export default function AdminLayout({ children }) {
       )}
 
       {/* 📬 RIGHT SIDE DYNAMIC CONTENT CONTAINER */}
-      {/* ⚡ Yahan se pt-16 ko hatakar normal layout responsive kar diya hai taake top area fuzool space na le */}
       <main className="flex-1 min-w-0 overflow-y-auto max-h-screen">
         <div className="transition-all duration-300">{children}</div>
       </main>
+
+      {/* ⚙️ 👑 FLOATING FIXED SETTINGS SYSTEM (BOTTOM-RIGHT CORNER) */}
+      <div
+        ref={quickSettingsRef}
+        className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
+      >
+        {/* 🛸 GLASSMORPHIC QUICK SETTINGS POP-UP */}
+        {isQuickSettingsOpen && (
+          <div className="w-64 bg-slate-900/90 border border-slate-800/80 p-4 rounded-2xl shadow-2xl backdrop-blur-xl text-white animate-in fade-in slide-in-from-bottom-3 duration-200">
+            <div className="flex items-center gap-2 border-b border-slate-800 pb-2 mb-3">
+              <SlidersHorizontal size={14} className="text-emerald-400" />
+              <h3 className="text-xs font-bold tracking-wide text-slate-200">
+                Quick Layout Controls
+              </h3>
+            </div>
+
+            {/* Choti-moti settings section */}
+            <div className="space-y-2">
+              <button
+                onClick={handleResetPosition}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition-all group"
+              >
+                <RotateCcw
+                  size={14}
+                  className="text-slate-400 group-hover:text-emerald-400"
+                />
+                Reset Hamburger Icon
+              </button>
+
+              {/* Add more quick actions here if needed in future */}
+            </div>
+
+            {/* 🛠️ More Settings Router Redirect Button */}
+            <div className="border-t border-slate-800/80 mt-3 pt-2">
+              <button
+                onClick={() => {
+                  setIsQuickSettingsOpen(false);
+                  router.push("/admin/settings"); // Direct settings page par phek dega
+                }}
+                className="w-full text-center text-xs font-semibold py-2 rounded-xl bg-emerald-500 text-black hover:bg-emerald-400 shadow-md shadow-emerald-500/10 transition-all block"
+              >
+                More Settings
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* 🔘 FIXED SETTINGS FLOATING TOGGLE ICON */}
+        <button
+          onClick={() => setIsQuickSettingsOpen(!isQuickSettingsOpen)}
+          className={`p-3.5 rounded-full bg-slate-900 border text-slate-300 hover:text-emerald-400 shadow-2xl transition-all duration-300 ${
+            isQuickSettingsOpen
+              ? "border-emerald-500 rotate-90 text-emerald-400 bg-slate-900/90 scale-105"
+              : "border-slate-800 hover:border-slate-700 active:scale-90 hover:scale-105"
+          }`}
+          title="Quick Setup Panel"
+        >
+          <Settings size={20} />
+        </button>
+      </div>
     </div>
   );
 }
