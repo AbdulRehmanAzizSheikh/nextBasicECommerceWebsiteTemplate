@@ -161,7 +161,7 @@ export default function AdminProductsPage() {
       {/* 🔔 FLOATING TOAST NOTIFICATION */}
       {notification.show && (
         <div
-          className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-xl backdrop-blur-md border border-white/10 transition-all duration-300 ${notification.type === "success" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-rose-500/20 text-rose-400 border-rose-500/30"}`}
+          className={`fixed bottom-5 left-5 z-50 px-5 py-3 rounded-xl shadow-xl backdrop-blur-md border border-white/10 transition-all duration-300 ${notification.type === "success" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-rose-500/20 text-rose-400 border-rose-500/30"}`}
         >
           {notification.message}
         </div>
