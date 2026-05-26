@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+
+@layer base {
+  /* Poori window ka scrollbar chhupane ke liye */
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none;
+  }
+}

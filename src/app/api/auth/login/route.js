@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { connectMongodb } from "@/lib/db";
+import connectMongodb from "../../../../lib/db.js";
 import { cookies } from "next/headers";
-import User from "@/lib/models/User";
-import { generateToken } from "@/utils/jwt";
+import User from "../../../../lib/models/User";
+import { generateToken } from "../../../../utils/jwt";
 import bcrypt from "bcrypt";
 
 export async function POST(req) {

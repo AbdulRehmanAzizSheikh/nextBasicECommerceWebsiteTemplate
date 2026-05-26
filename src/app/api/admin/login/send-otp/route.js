@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectMongodb } from "@/lib/db"; // Apne db connection ka sahi path check karlena
+import connectMongodb from "@/lib/db.js";
 import Admin from "@/lib/models/Admin";
 import nodemailer from "nodemailer";
 import otpGenerator from "@/utils/otpGenerator";
