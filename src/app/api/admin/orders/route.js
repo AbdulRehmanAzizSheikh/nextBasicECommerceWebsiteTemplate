@@ -8,10 +8,8 @@ import Admin from "../../../../lib/models/Admin";
 
 export async function GET(request) {
   try {
-    // 1. Database se connect karo
     await connectMongodb();
 
-    // 2. Token verification (Check karo login hai ya nahi)
     const token = request.cookies.get("admin_token")?.value;
     if (!token) {
       return NextResponse.json(
@@ -28,7 +26,6 @@ export async function GET(request) {
       );
     }
 
-    // 3. Admin Role Verification (Sirf admin ke liye entry hai)
     const admin = await Admin.findById(decoded.id);
     if (!admin) {
       return NextResponse.json(
@@ -37,7 +34,6 @@ export async function GET(request) {
       );
     }
 
-    // 4. 🔥 Double Populate + Projection (Sirf kaam ka data mangwaya)
     const getOrders = await Order.find();
     const getUser = async (id) => {
       return await User.findById(id);
@@ -81,7 +77,6 @@ export async function GET(request) {
       }),
     );
 
-    // 6. Makkhan Response
     return NextResponse.json(
       {
         status: true,
