@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "@/lib/db.js";
-import Admin from "@/lib/models/Admin";
+import connectMongodb from "../../../../../lib/db.js";
+import Admin from "../../../../../lib/models/Admin";
 import nodemailer from "nodemailer";
-import otpGenerator from "@/utils/otpGenerator";
+import otpGenerator from "../../../../../utils/otpGenerator";
 
 export async function POST(req) {
   const { email } = await req.json();

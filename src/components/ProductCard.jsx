@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ShoppingCart, Eye } from "lucide-react";
 
 export default function ProductCard({ product }) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "@/lib/db.js";
-import Product from "@/lib/models/Product";
+import connectMongodb from "../../../../../lib/db.js";
+import Product from "../../../../../lib/models/Product";
 
 // 🔥 1. PUT: Product Update karne ke liye
 export async function PUT(req, { params }) {
