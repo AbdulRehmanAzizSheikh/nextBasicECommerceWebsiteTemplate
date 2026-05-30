@@ -97,3 +97,75 @@ export async function GET(request) {
     );
   }
 }
+
+export async function PUT(request) {
+  try {
+    await connectMongodb();
+
+    const token = request.cookies.get("admin_token")?.value;
+    if (!token) {
+      return NextResponse.json(
+        { status: false, message: "Unauthorized! Missing token." },
+        { status: 401 },
+      );
+    }
+
+    const decoded = await decodeToken(token);
+    if (!decoded || !decoded.id) {
+      return NextResponse.json(
+        { status: false, message: "Invalid token!" },
+        { status: 401 },
+      );
+    }
+
+    const admin = await Admin.findById(decoded.id);
+    if (!admin) {
+      return NextResponse.json(
+        { status: false, message: "Access Denied! Admins only." },
+        { status: 403 },
+      );
+    }
+
+    const body = await request.json();
+    const { orderId, status } = body;
+
+    if (!orderId || !status) {
+      return NextResponse.json(
+        { status: false, message: "Missing orderId or status!" },
+        { status: 400 },
+      );
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { status: status },
+      { new: true }, // { new: true } se updated data wapas milta hai
+    );
+
+    if (!updatedOrder) {
+      return NextResponse.json(
+        { status: false, message: "Order not found!" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: `Order status updated to ${status} successfully!`,
+        success: updatedOrder,
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Admin Update Status Error:", error);
+    return NextResponse.json(
+      {
+        status: false,
+        message: "Internal Server Error",
+        error: error.message,
+      },
+      { status: 500 },
+    );
+  }
+}
