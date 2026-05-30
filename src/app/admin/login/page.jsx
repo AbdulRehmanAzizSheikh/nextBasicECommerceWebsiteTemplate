@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import Loader from "@/components/loader";
+import Loader from "../../../components/loader";
 
 export default function SendOtpPage() {
   const [email, setEmail] = useState("");

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Loader from "@/components/loader";
+import Loader from "../../../../components/loader";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

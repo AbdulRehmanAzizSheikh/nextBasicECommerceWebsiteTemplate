@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Loader from "@/components/loader";
+import Loader from "../../../../components/loader";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -27,10 +27,10 @@ export default function RegisterPage() {
         },
         body: JSON.stringify({ username, email, password }),
       });
-      
+
       const data = await response.json();
       console.log(data);
-      
+
       if (data.success) {
         //  router.push("/login");
       } else {
@@ -51,28 +51,30 @@ export default function RegisterPage() {
   return (
     // 🌌 Aesthetic Mesh Gradient Background
     <div className="flex items-center justify-center min-h-screen bg-gray-950 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-gray-950 to-purple-950 p-4">
-      
       {/* 🔮 Background Abstract Glow Shapes */}
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-pink-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
 
       {/* 💳 Water Transparent / Glassmorphism Card */}
       <div className="w-full max-w-md backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-8 sm:p-10 transition-all duration-300 hover:border-white/[0.15]">
-        
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
             Create Account
           </h1>
-          <p className="text-sm text-gray-400 mt-2">Get started with your e-commerce journey</p>
+          <p className="text-sm text-gray-400 mt-2">
+            Get started with your e-commerce journey
+          </p>
         </div>
 
         {/* Form Fields Container */}
         <div className="flex flex-col gap-5">
-          
           {/* Username */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="username" className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1">
+            <label
+              htmlFor="username"
+              className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1"
+            >
               Username
             </label>
             <input
@@ -87,7 +89,10 @@ export default function RegisterPage() {
 
           {/* Email */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1">
+            <label
+              htmlFor="email"
+              className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1"
+            >
               Email Address
             </label>
             <input
@@ -102,7 +107,10 @@ export default function RegisterPage() {
 
           {/* Password */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1">
+            <label
+              htmlFor="password"
+              className="text-xs font-semibold uppercase tracking-wider text-gray-400 px-1"
+            >
               Password
             </label>
             <input
@@ -128,15 +136,14 @@ export default function RegisterPage() {
         <div className="text-center mt-6">
           <p className="text-xs text-gray-500">
             Already have an account?{" "}
-            <span 
-              onClick={() => router.push("/login")} 
+            <span
+              onClick={() => router.push("/login")}
               className="text-blue-400 hover:text-blue-300 cursor-pointer font-medium hover:underline transition-all"
             >
               Log in
             </span>
           </p>
         </div>
-
       </div>
     </div>
   );
