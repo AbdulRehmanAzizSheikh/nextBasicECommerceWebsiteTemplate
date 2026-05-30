@@ -8,7 +8,12 @@ import Admin from "../../../../lib/models/Admin";
 
 export async function GET(request) {
   try {
-    await connectMongodb();
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const statusFilter = searchParams.get("status");
+
+    const LIMIT = 10;
+    const skip = (page - 1) * LIMIT;
 
     const token = request.cookies.get("admin_token")?.value;
     if (!token) {
@@ -26,6 +31,8 @@ export async function GET(request) {
       );
     }
 
+    await connectMongodb();
+
     const admin = await Admin.findById(decoded.id);
     if (!admin) {
       return NextResponse.json(
@@ -33,8 +40,23 @@ export async function GET(request) {
         { status: 403 },
       );
     }
-
-    const getOrders = await Order.find();
+    let filterQuery = {};
+    if (statusFilter) {
+      filterQuery.status = statusFilter;
+    }
+    const getOrders = await Order.find(filterQuery)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(LIMIT);
+    if (getOrders.length === 0) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "No orders found!",
+        },
+        { status: 200 },
+      );
+    }
     const getUser = async (id) => {
       return await User.findById(id);
     };
@@ -77,10 +99,13 @@ export async function GET(request) {
       }),
     );
 
+    const totalOrders = await Order.countDocuments(filterQuery);
+    const totalPages = Math.ceil(totalOrders / LIMIT) || 1;
     return NextResponse.json(
       {
         status: true,
-        count: orders.length,
+        total: totalOrders,
+        pages: totalPages,
         orders: orders,
       },
       { status: 200 },
@@ -139,7 +164,7 @@ export async function PUT(request) {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { status: status },
-      { new: true }, // { new: true } se updated data wapas milta hai
+      { new: true },
     );
 
     if (!updatedOrder) {
