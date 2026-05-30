@@ -40,23 +40,28 @@ export async function GET(request) {
         { status: 403 },
       );
     }
-    let filterQuery = {};
+    let query = {};
     if (statusFilter) {
-      filterQuery.status = statusFilter;
+      query.status = statusFilter;
     }
-    const getOrders = await Order.find(filterQuery)
+    if (searchParams.get("id")) {
+      query._id = searchParams.get("id");
+    }
+    const getOrders = await Order.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(LIMIT);
+
     if (getOrders.length === 0) {
       return NextResponse.json(
         {
-          status: false,
+          status: true,
           message: "No orders found!",
         },
-        { status: 200 },
+        { status: 404 },
       );
     }
+
     const getUser = async (id) => {
       return await User.findById(id);
     };
@@ -99,7 +104,7 @@ export async function GET(request) {
       }),
     );
 
-    const totalOrders = await Order.countDocuments(filterQuery);
+    const totalOrders = await Order.countDocuments(query);
     const totalPages = Math.ceil(totalOrders / LIMIT) || 1;
     return NextResponse.json(
       {
