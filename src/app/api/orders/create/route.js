@@ -4,6 +4,7 @@ import Order from "../../../../lib/models/Order";
 import { decodeToken } from "../../../../utils/jwt";
 import User from "../../../../lib/models/User";
 import Product from "../../../../lib/models/Product";
+import BanNumber from "../../../../lib/models/BanNumber";
 
 export async function POST(request) {
   try {
@@ -39,9 +40,9 @@ export async function POST(request) {
     }
 
     const { phone, products, address } = body;
-
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     // 3. Validation
-    if (!address || !products || products.length === 0) {
+    if (!phone || !address || !products || !products.length) {
       return NextResponse.json(
         {
           status: false,
@@ -49,6 +50,42 @@ export async function POST(request) {
           error: "requiredFieldsMissing",
         },
         { status: 400 },
+      );
+    } else if (!products.length) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Products array is required!",
+          error: "productsArrayMissing",
+        },
+        { status: 400 },
+      );
+    } else if (products.some((p) => !p.id || !p.quantity)) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Each product must have an ID and quantity!",
+          error: "invalidProductData",
+        },
+        { status: 400 },
+      );
+    } else if (!phoneRegex.test(phone)) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Invalid phone number format!",
+          error: "invalidPhoneFormat",
+        },
+        { status: 400 },
+      );
+    } else if (await BanNumber.findOne({ phone })) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "You are not allowed to place orders!",
+          error: "userBanned",
+        },
+        { status: 403 },
       );
     }
 
