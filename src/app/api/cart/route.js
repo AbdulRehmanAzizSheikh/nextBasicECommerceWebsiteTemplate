@@ -92,18 +92,29 @@ export async function POST(request) {
       cart = new Cart({ _id, products: [] });
     }
 
-    // Check karo kya yeh item pehle se cart me hai?
-    const itemIndex = cart.products.findIndex((p) => p.id.toString() === id);
+    // check karo kya product ID valid hai ya nahi
+    const product = async () => {
+      try {
+        return await Product.findById(id);
+      } catch (error) {
+        return null;
+      }
+    };
+    if (!(await product())) {
+      return NextResponse.json(
+        { status: false, message: "Product not found!" },
+        { status: 404 },
+      );
+    }
 
+    // Check karo kya yeh item pehle se cart me hai?
+    const itemIndex = cart.products.findIndex((p) => p.id === id);
     if (itemIndex > -1) {
-      // Agar pehle se hai, to purani quantity me nayi quantity plus karlo
       cart.products[itemIndex].quantity = quantity;
     } else {
-      // Agar naya item hai, to array me push marnon
       cart.products.push({ id, quantity });
     }
 
-    console.log(cart);
     await cart.save();
     return NextResponse.json(
       {
