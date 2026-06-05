@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const adminSchema = new mongoose.Schema(
+const AdminSchema = new mongoose.Schema(
   {
     email: String,
     otp: {
@@ -11,4 +11,4 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.models.Admin || mongoose.model("Admin", adminSchema);
+export default mongoose.models.Admin || mongoose.model("Admin", AdminSchema);

@@ -28,11 +28,7 @@ export async function GET(request) {
       );
     }
 
-    // User ka cart dhoondo aur `.populate()` ke zariye product ka naam, price, image bhi sath uthao
-    const cart = await Cart.findOne({ _id }).populate(
-      "products.productId",
-      "name price image stock",
-    );
+    const cart = await Cart.findOne({ _id });
 
     if (!cart || !cart.products.length) {
       return NextResponse.json(
@@ -42,7 +38,12 @@ export async function GET(request) {
     }
 
     return NextResponse.json(
-      { status: true, cart: cart.products },
+      {
+        status: true, cart: {
+          products: cart.products,
+          totalItems: cart.products.reduce((sum, item) => sum + item.quantity, 0),
+        },
+      },
       { status: 200 },
     );
   } catch (error) {
@@ -59,14 +60,14 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     await connectMongodb();
-    const _id = await getUserIdFromToken(request);
-    if (!_id) {
+    const userId = await getUserIdFromToken(request);
+    if (!userId) {
       return NextResponse.json(
         { status: false, message: "Unauthorized!" },
         { status: 401 },
       );
     }
-    const user = await User.findById(_id);
+    const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json(
         {
@@ -78,8 +79,8 @@ export async function POST(request) {
       );
     }
 
-    const { id, quantity } = await request.json();
-    if (!id || !quantity) {
+    const { _id, quantity } = await request.json();
+    if (!_id || !quantity) {
       return NextResponse.json(
         { status: false, message: "Missing fields!" },
         { status: 400 },
@@ -87,15 +88,15 @@ export async function POST(request) {
     }
 
     // User ka cart dhoondo, agar nahi hai to naya empty cart object banao
-    let cart = await Cart.findOne({ _id });
+    let cart = await Cart.findOne({ _id: userId });
     if (!cart) {
-      cart = new Cart({ _id, products: [] });
+      cart = new Cart({ _id: userId, products: [] });
     }
 
     // check karo kya product ID valid hai ya nahi
     const product = async () => {
       try {
-        return await Product.findById(id);
+        return await Product.findById({ _id });
       } catch (error) {
         return null;
       }
@@ -108,11 +109,11 @@ export async function POST(request) {
     }
 
     // Check karo kya yeh item pehle se cart me hai?
-    const itemIndex = cart.products.findIndex((p) => p.id === id);
+    const itemIndex = cart.products.findIndex((p) => p._id == _id);
     if (itemIndex > -1) {
       cart.products[itemIndex].quantity = quantity;
     } else {
-      cart.products.push({ id, quantity });
+      cart.products.push({ _id, quantity });
     }
 
     await cart.save();
@@ -120,7 +121,7 @@ export async function POST(request) {
       {
         status: true,
         message: "Cart updated successfully!",
-        cart: cart.products,
+        cart: cart,
       },
       { status: 200 },
     );
@@ -138,8 +139,8 @@ export async function POST(request) {
 export async function DELETE(request) {
   try {
     await connectMongodb();
-    const _id = await getUserIdFromToken(request);
-    if (!_id) {
+    const userId = await getUserIdFromToken(request);
+    if (!userId) {
       return NextResponse.json(
         { status: false, message: "Unauthorized!" },
         { status: 401 },
@@ -147,29 +148,41 @@ export async function DELETE(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const productId = searchParams.get("productId");
+    const _id = searchParams.get("_id");
 
-    if (!productId) {
+    if (!_id) {
       return NextResponse.json(
         { status: false, message: "Product ID is required!" },
         { status: 400 },
       );
     }
 
-    let cart = await Cart.findOne({ _id });
+    let cart = await Cart.findOne({ _id: userId });
     if (!cart) {
       return NextResponse.json(
         { status: false, message: "Cart not found!" },
         { status: 404 },
       );
     }
-
+    const checkProduct = cart.products.some((p) => p._id == _id);
+    if (!checkProduct) {
+      return NextResponse.json(
+        { status: false, message: "Product not found in cart!" },
+        { status: 404 },
+      );
+    }
     // Filter chalakar us makhsoos product ko array se nikal do
-    cart.products = cart.products.filter((p) => p.id.toString() !== productId);
+    const deleteProduct = cart.products.filter((p) => p._id != _id);
+    cart.products = deleteProduct;
 
     await cart.save();
     return NextResponse.json(
-      { status: true, message: "Item removed from cart!", cart: cart.products },
+      {
+        status: true, message: "Item removed from cart!", cart: {
+          products: cart.products,
+          totalItems: cart.products.length
+        }
+      },
       { status: 200 },
     );
   } catch (error) {

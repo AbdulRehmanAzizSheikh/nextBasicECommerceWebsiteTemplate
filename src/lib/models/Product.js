@@ -5,7 +5,7 @@ const ProductSchema = new mongoose.Schema(
     title: String,
     description: String,
     price: Number,
-    category: { type: String, default: "other" },
+    category: mongoose.Schema.Types.ObjectId,
     stock: { type: Number, default: 0 },
     imageUrl: {
       type: String,
@@ -20,5 +20,4 @@ const ProductSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.Product ||
-  mongoose.model("Product", ProductSchema);
+export default mongoose.models.Product || mongoose.model("Product", ProductSchema);
