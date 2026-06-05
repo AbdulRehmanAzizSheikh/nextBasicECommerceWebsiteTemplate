@@ -66,7 +66,7 @@ export async function POST(request) {
         { status: false, message: "Unauthorized!" },
         { status: 401 },
       );
-    }
+    };
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json(

@@ -1,13 +1,11 @@
 import Product from "../../../../lib/models/Product";
 import connectMongodb from "../../../../lib/db";
 import { NextResponse } from "next/server";
-
 export async function GET(request, { params }) {
     try {
         await connectMongodb();
-        const { id } = params;
-
-        const product = await Product.findById(id);
+        const { id } = await params;
+        const product = await Product.findById({ _id: id });
 
         if (!product) {
             return NextResponse.json(
