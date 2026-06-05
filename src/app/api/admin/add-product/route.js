@@ -14,7 +14,7 @@ export async function POST(req) {
       stock,
       imageUrl,
       keywords,
-      featuredProduct,
+      featured,
     } = body;
 
     // Server-side strict check
@@ -36,7 +36,7 @@ export async function POST(req) {
       stock: Number(stock),
       imageUrl,
       keywords,
-      featuredProduct: Boolean(featuredProduct),
+      featured,
     });
 
     return NextResponse.json(

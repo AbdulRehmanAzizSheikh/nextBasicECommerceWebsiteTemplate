@@ -2,17 +2,22 @@ import { NextResponse } from "next/server";
 import connectMongodb from "../../../lib/db";
 import Product from "../../../lib/models/Product";
 
-export async function GET() {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const page = parseInt(searchParams.get("page")) || 1;
+  const LIMIT = 10;
+  const skip = (page - 1) * LIMIT;
   try {
     await connectMongodb();
 
-    const products = await Product.find().sort({
-      featuredProduct: -1,
-      createdAt: -1,
-    });
+    const products = await Product.find().sort({ featuredProduct: -1, createdAt: -1, }).skip(skip).limit(LIMIT);
 
     return NextResponse.json(
-      { status: true, count: products.length, products },
+      {
+        status: true,
+        total: await Product.countDocuments(),
+        products
+      },
       { status: 200 },
     );
   } catch (error) {

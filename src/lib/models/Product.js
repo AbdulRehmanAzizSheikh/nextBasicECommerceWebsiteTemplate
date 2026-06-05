@@ -13,7 +13,7 @@ const ProductSchema = new mongoose.Schema(
         "https://s3.ap-south-1.amazonaws.com/production.media.hafla.com/static_images/host/default-images/default-product.png",
     },
     keywords: [String],
-    featuredProduct: { type: Boolean, default: false },
+    featured: { type: Boolean, default: false },
   },
   {
     timestamps: true,
