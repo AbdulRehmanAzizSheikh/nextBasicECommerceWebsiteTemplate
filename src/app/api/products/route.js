@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../lib/db";
-import Product from "../../../lib/models/Product";
+import connectMongodb from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
+import Product from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

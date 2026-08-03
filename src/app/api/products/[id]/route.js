@@ -1,5 +1,5 @@
-import Product from "../../../../lib/models/Product";
-import connectMongodb from "../../../../lib/db";
+import Product from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
 import { NextResponse } from "next/server";
 export async function GET(request, { params }) {
     try {

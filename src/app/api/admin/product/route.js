@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../lib/db.js";
-import Product from "../../../../lib/models/Product.js";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db.js";
+import Product from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product.js";
 
 // 🔥 1. PATCH: Product Update karne ke liye
 export async function PATCH(req) {

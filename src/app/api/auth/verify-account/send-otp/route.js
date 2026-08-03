@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import otpGenerator from "../../../../../utils/otpGenerator";
-import User from "../../../../../lib/models/User";
-import connectMongodb from "../../../../../lib/db.js";
+import User from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User";
+import connectMongodb from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db.js";
 
 const emailConfig = {
   service: "gmail",

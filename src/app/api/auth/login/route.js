@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../lib/db.js";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db.js";
 import { cookies } from "next/headers";
-import User from "../../../../lib/models/User";
-import { generateToken } from "../../../../utils/jwt";
+import User from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User.js";
+import { generateToken } from "../../../../utils/jwt/index.js";
 import bcrypt from "bcrypt";
 
 export async function POST(req) {

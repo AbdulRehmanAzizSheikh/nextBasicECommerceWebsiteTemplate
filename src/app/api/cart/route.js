@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../lib/db";
-import Cart from "../../../lib/models/Cart";
-import Product from "../../../lib/models/Product";
+import connectMongodb from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
+import Cart from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Cart";
+import Product from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product";
 import { decodeToken } from "../../../utils/jwt";
-import User from "../../../lib/models/User";
+import User from "../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User";
 
 // 🔐 Helper function token se user ID nikalne ke liye
 async function getUserIdFromToken(request) {

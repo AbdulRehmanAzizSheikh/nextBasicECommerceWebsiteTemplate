@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../lib/db";
-import BanNumber from "../../../../lib/models/BanNumber";
-import Admin from "../../../../lib/models/Admin";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
+import BanNumber from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/BanNumber";
+import Admin from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Admin";
 import { decodeToken } from "../../../../utils/jwt";
 
 // 👮‍♂️ HELPER FUNCTION: Security Check ta-ke koi aam banda ya hacker yeh API hit na kare

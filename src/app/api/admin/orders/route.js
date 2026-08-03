@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../lib/db";
-import Order from "../../../../lib/models/Order";
-import User from "../../../../lib/models/User";
-import Product from "../../../../lib/models/Product";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
+import Order from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Order";
+import User from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User";
+import Product from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product";
 import { decodeToken } from "../../../../utils/jwt";
-import Admin from "../../../../lib/models/Admin";
+import Admin from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Admin";
 
 export async function GET(request) {
   try {

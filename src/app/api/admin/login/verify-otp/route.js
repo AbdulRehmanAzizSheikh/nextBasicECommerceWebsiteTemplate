@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../../lib/db.js";
+import connectMongodb from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db.js";
 import { cookies } from "next/headers";
-import Admin from "../../../../../lib/models/Admin";
-import { generateToken } from "../../../../../utils/jwt";
+import Admin from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Admin.js";
+import { generateToken } from "../../../../../utils/jwt/index.js";
 
 export async function POST(req) {
   try {

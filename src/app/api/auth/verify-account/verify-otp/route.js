@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../../lib/db.js";
-import User from "../../../../../lib/models/User";
+import connectMongodb from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db.js";
+import User from "../../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User.js";
 
 export async function POST(req) {
   try {

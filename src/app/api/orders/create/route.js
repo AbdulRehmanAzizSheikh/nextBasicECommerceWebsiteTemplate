@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import connectMongodb from "../../../../lib/db";
-import Order from "../../../../lib/models/Order";
+import connectMongodb from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/db";
+import Order from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Order";
 import { decodeToken } from "../../../../utils/jwt";
-import User from "../../../../lib/models/User";
-import Product from "../../../../lib/models/Product";
-import BanNumber from "../../../../lib/models/BanNumber";
+import User from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/User";
+import Product from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/Product";
+import BanNumber from "../../../../../../nextBasicECommerceWebsiteTemplate/src/lib/models/BanNumber";
 
 export async function POST(request) {
   try {
